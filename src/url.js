@@ -2,12 +2,12 @@ const urlParse = require('url-parse')
 const {dirname, join, normalize, relative} = require('path')
 
 module.exports = {
-  isAbsolute,
+  isAbsoluteUrl,
   relativeUrl,
   resolveUrl,
 }
 
-function isAbsolute (url) {
+function isAbsoluteUrl (url) {
   const parsed = urlParse(url)
 
   return !!parsed.host
