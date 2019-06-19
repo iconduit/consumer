@@ -1,13 +1,19 @@
-const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
+const {isAbsoluteUrl, relativeUrl, resolveUrl, urlPath} = require('./url.js')
 const {createTagRenderer} = require('./template.js')
 
 module.exports = {
   createConsumer,
 }
 
-function createConsumer (manifest, baseUrl) {
+function createConsumer (manifest, options = {}) {
   const {output: {document, image}, urls: {base: appBaseUrl, output: outputBaseUrl}} = manifest
-  baseUrl = baseUrl || outputBaseUrl
+
+  const {
+    basePath = '.',
+    baseUrl: optionsBaseUrl,
+  } = options
+
+  const baseUrl = optionsBaseUrl || outputBaseUrl
 
   const consumer = {
     absoluteUrl (url) {
@@ -16,6 +22,10 @@ function createConsumer (manifest, baseUrl) {
 
     absoluteImageUrl (outputName, sizeKey) {
       return resolveAbsolute(originalImageUrl(outputName, sizeKey))
+    },
+
+    documentPath (outputName) {
+      return urlToPath(originalDocumentUrl(outputName))
     },
 
     documentUrl (outputName) {
@@ -27,7 +37,11 @@ function createConsumer (manifest, baseUrl) {
 
       if (!definition) throw new Error(`Undefined document output ${JSON.stringify(outputName)}`)
 
-      return createConsumer(manifest, definition.url)
+      return createConsumer(manifest, {baseUrl: definition.url})
+    },
+
+    imagePath (outputName, sizeKey) {
+      return urlToPath(originalImageUrl(outputName, sizeKey))
     },
 
     imageUrl (outputName, sizeKey) {
@@ -97,5 +111,11 @@ function createConsumer (manifest, baseUrl) {
     if (!url) return null
 
     return relativeUrl(baseUrl, url)
+  }
+
+  function urlToPath (url) {
+    if (!url) return null
+
+    return resolveUrl(basePath, urlPath(url))
   }
 }
