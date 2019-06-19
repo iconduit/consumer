@@ -1,3 +1,5 @@
+const {join} = require('path')
+
 const {isAbsoluteUrl, relativeUrl, resolveUrl, urlPath} = require('./url.js')
 const {createTagRenderer} = require('./template.js')
 
@@ -116,6 +118,6 @@ function createConsumer (manifest, options = {}) {
   function urlToPath (url) {
     if (!url) return null
 
-    return resolveUrl(basePath, urlPath(url))
+    return join(basePath, urlPath(url))
   }
 }
