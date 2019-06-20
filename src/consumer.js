@@ -53,6 +53,8 @@ function createConsumer (manifest, options = {}) {
       return resolveRelative(originalImageUrl(outputName, sizeKey))
     },
 
+    manifest,
+
     renderTagList (definitions) {
       const rendered = []
 
