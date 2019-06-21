@@ -1,6 +1,6 @@
 const {join} = require('path')
 
-const {isAbsoluteUrl, relativeUrl, resolveUrl, urlPath} = require('./url.js')
+const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
 const {createTagRenderer} = require('./template.js')
 
 module.exports = {
@@ -27,7 +27,11 @@ function createConsumer (manifest, options = {}) {
     },
 
     documentPath (outputName) {
-      return urlToPath(originalDocumentUrl(outputName))
+      const path = originalDocumentPath(outputName)
+
+      if (!path) return null
+
+      return join(basePath, path)
     },
 
     documentUrl (outputName) {
@@ -46,7 +50,11 @@ function createConsumer (manifest, options = {}) {
     },
 
     imagePath (outputName, sizeKey) {
-      return urlToPath(originalImageUrl(outputName, sizeKey))
+      const path = originalImagePath(outputName, sizeKey)
+
+      if (!path) return null
+
+      return join(basePath, path)
     },
 
     imageUrl (outputName, sizeKey) {
@@ -95,10 +103,23 @@ function createConsumer (manifest, options = {}) {
 
   return consumer
 
+  function originalDocumentPath (outputName) {
+    const {path = null} = document[outputName] || {}
+
+    return path
+  }
+
   function originalDocumentUrl (outputName) {
     const {url = null} = document[outputName] || {}
 
     return url
+  }
+
+  function originalImagePath (outputName, sizeKey) {
+    const definition = image[outputName] || {}
+    const {path = null} = definition[sizeKey] || {}
+
+    return path
   }
 
   function originalImageUrl (outputName, sizeKey) {
@@ -118,11 +139,5 @@ function createConsumer (manifest, options = {}) {
     if (!url) return null
 
     return relativeUrl(baseUrl, url)
-  }
-
-  function urlToPath (url) {
-    if (!url) return null
-
-    return join(basePath, urlPath(url))
   }
 }

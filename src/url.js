@@ -5,7 +5,6 @@ module.exports = {
   isAbsoluteUrl,
   relativeUrl,
   resolveUrl,
-  urlPath,
 }
 
 function isAbsoluteUrl (url) {
@@ -69,10 +68,6 @@ function resolveUrl (baseUrl, url) {
   urlParsed.pathname = resolvePathname(baseUrlParsed.pathname, urlParsed.pathname)
 
   return urlParsed.toString()
-}
-
-function urlPath (url) {
-  return urlParse(url).pathname
 }
 
 function resolvePathname (basePathname, pathname) {
