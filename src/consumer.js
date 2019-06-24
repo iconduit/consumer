@@ -91,20 +91,31 @@ function createConsumer (manifest, options = {}) {
           const sizes = image[imageName]
 
           for (const sizeKey in sizes) {
-            const output = sizes[sizeKey]
-            const renderTag = createTagRenderer({consumer, manifest, output, outputName: imageName, sizeKey})
+            const current = {
+              name: imageName,
+              output: sizes[sizeKey],
+              size: sizeKey,
+              type: 'image',
+            }
+
+            const renderTag = createTagRenderer({...consumer, current})
             const html = renderTag(definition)
 
             if (html) rendered.push(html)
           }
         } else if (documentName) {
-          const output = document[documentName]
-          const renderTag = createTagRenderer({consumer, manifest, output, outputName: documentName})
+          const current = {
+            name: documentName,
+            output: document[documentName],
+            type: 'document',
+          }
+
+          const renderTag = createTagRenderer({...consumer, current})
           const html = renderTag(definition)
 
           if (html) rendered.push(html)
         } else {
-          const renderTag = createTagRenderer({consumer, manifest})
+          const renderTag = createTagRenderer({...consumer})
           const html = renderTag(definition)
 
           if (html) rendered.push(html)
