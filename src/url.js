@@ -1,5 +1,6 @@
 const urlParse = require('url-parse')
-const {dirname, join, normalize, relative} = require('path')
+
+const {relativePath, resolvePath} = require('./path.js')
 
 module.exports = {
   isAbsoluteUrl,
@@ -7,20 +8,30 @@ module.exports = {
   resolveUrl,
 }
 
+/**
+ * Determine whether the supplied URL is absolute.
+ */
 function isAbsoluteUrl (url) {
+  if (typeof url !== 'string') throw new Error('URL must be a string')
+
   const parsed = urlParse(url)
 
   return !!parsed.host
 }
 
+/**
+ * Get a relative URL from one URL to another.
+ *
+ * Supports relative URLs.
+ */
 function relativeUrl (fromUrl, toUrl) {
+  if (typeof fromUrl !== 'string') throw new Error('From URL must be a string')
+  if (typeof toUrl !== 'string') throw new Error('To URL must be a string')
+
   const fromUrlParsed = urlParse(fromUrl)
   const toUrlParsed = urlParse(toUrl)
 
   if (fromUrlParsed.origin !== toUrlParsed.origin) return toUrl
-
-  const fromUrlIsAbsolute = !!fromUrlParsed.host
-  const toUrlIsAbsolute = !!toUrlParsed.host
 
   toUrlParsed.protocol = ''
   toUrlParsed.slashes = false
@@ -28,73 +39,34 @@ function relativeUrl (fromUrl, toUrl) {
   toUrlParsed.host = ''
   toUrlParsed.port = ''
 
-  const fromPathname = normalize(
-    fromUrlIsAbsolute
-      ? fromUrlParsed.pathname.startsWith('/') ? fromUrlParsed.pathname : '/' + fromUrlParsed.pathname
-      : fromUrlParsed.pathname
-  )
-  const toPathname = normalize(
-    toUrlIsAbsolute
-      ? toUrlParsed.pathname.startsWith('/') ? toUrlParsed.pathname : '/' + toUrlParsed.pathname
-      : toUrlParsed.pathname
-  )
-
-  const fromUrlPathnameIsAbsolute = fromPathname.startsWith('/')
-  const toUrlPathnameIsAbsolute = toPathname.startsWith('/')
-
-  if (fromUrlPathnameIsAbsolute && !toUrlPathnameIsAbsolute) return toUrlParsed.toString()
-
-  const fromPathnameIsDir = fromPathname.endsWith('/')
-  const fromDirPathname = fromPathnameIsDir ? fromPathname : dirname(fromPathname)
-
-  const toPathnameIsDir = toPathname.endsWith('/')
-  const trailingSlash = isFilePathname(toPathname) ? '' : '/'
-
-  const relativePath = fromPathnameIsDir && !toPathnameIsDir
-    ? relative(fromDirPathname, toPathname)
-    : relative(fromDirPathname, toPathname) || '.'
-
-  toUrlParsed.pathname = isFilePathname(relativePath) ? relativePath + trailingSlash : relativePath
+  toUrlParsed.pathname = relativePath(urlPathname(fromUrlParsed), urlPathname(toUrlParsed))
 
   return toUrlParsed.toString()
 }
 
+/**
+ * Resolve a URL against another URL.
+ *
+ * Supports relative URLs.
+ */
 function resolveUrl (baseUrl, url) {
+  if (typeof baseUrl !== 'string') throw new Error('Base URL must be a string')
+  if (typeof url !== 'string') throw new Error('URL must be a string')
+
   const baseUrlParsed = urlParse(baseUrl)
 
   if (baseUrlParsed.host) return urlParse(url, baseUrl).toString()
 
   const urlParsed = urlParse(url)
-  urlParsed.pathname = resolvePathname(baseUrlParsed.pathname, urlParsed.pathname)
+  urlParsed.pathname = resolvePath(baseUrlParsed.pathname, urlParsed.pathname)
 
   return urlParsed.toString()
 }
 
-function resolvePathname (basePathname, pathname) {
-  if (!pathname) return normalize(basePathname)
+function urlPathname (parsed) {
+  const {host, pathname} = parsed
 
-  const normalized = normalize(pathname)
+  if (!host) return pathname
 
-  if (pathname.startsWith('/')) return normalized
-
-  const baseDirPathname = basePathname.endsWith('/') ? basePathname : dirname(basePathname)
-  const trailingSlash = isFilePathname(normalized) ? '' : '/'
-  const resolved = normalize(join(baseDirPathname, normalized))
-
-  return isFilePathname(resolved) ? resolved + trailingSlash : resolved
-}
-
-function isFilePathname (pathname) {
-  if (pathname === '.' || pathname.endsWith('/')) return false
-
-  const lastSlashIndex = pathname.lastIndexOf('/')
-  let lastAtom
-
-  if (lastSlashIndex < 0) {
-    lastAtom = pathname
-  } else {
-    lastAtom = pathname.substring(lastSlashIndex + 1)
-  }
-
-  return lastAtom !== '..'
+  return pathname || '/'
 }
