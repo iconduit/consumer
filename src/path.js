@@ -27,7 +27,7 @@ function relativePath (fromPath, toPath) {
 
   toPath = normalizePath(toPath)
 
-  if (isAbsolutePath(fromPath) && !isAbsolutePath(toPath)) return toPath
+  if (isAbsolutePath(fromPath) !== isAbsolutePath(toPath)) return toPath
 
   fromPath = normalizePath(fromPath)
 

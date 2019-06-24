@@ -1,5 +1,4 @@
-const {join} = require('path')
-
+const {isAbsolutePath, relativePath} = require('./path.js')
 const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
 const {createTagRenderer} = require('./template.js')
 
@@ -8,34 +7,52 @@ module.exports = {
 }
 
 function createConsumer (manifest, options = {}) {
-  const {output: {document, image}, urls: {base: appBaseUrl, output: outputBaseUrl}} = manifest
+  const {
+    output: {document, image},
+    outputPath: manifestOutputPath,
+    urls: {base: appBaseUrl, output: outputBaseUrl},
+  } = manifest
 
   const {
     basePath = '.',
     baseUrl: optionsBaseUrl,
+    outputPath: optionsOutputPath,
   } = options
 
   const baseUrl = optionsBaseUrl || outputBaseUrl
+  const outputPath = optionsOutputPath || manifestOutputPath
 
   const consumer = {
+    absolutePath (path) {
+      return resolveAbsolutePath(path)
+    },
+
     absoluteUrl (url) {
-      return resolveAbsolute(url)
+      return resolveAbsoluteUrl(url)
+    },
+
+    absoluteDocumentPath (outputName, sizeKey) {
+      return resolveAbsolutePath(documentDefinition(outputName).path)
+    },
+
+    absoluteDocumentUrl (outputName) {
+      return resolveAbsoluteUrl(documentDefinition(outputName).url)
+    },
+
+    absoluteImagePath (outputName, sizeKey) {
+      return resolveAbsolutePath(imageDefinition(outputName, sizeKey).path)
     },
 
     absoluteImageUrl (outputName, sizeKey) {
-      return resolveAbsolute(originalImageUrl(outputName, sizeKey))
+      return resolveAbsoluteUrl(imageDefinition(outputName, sizeKey).url)
     },
 
     documentPath (outputName) {
-      const path = originalDocumentPath(outputName)
-
-      if (!path) return null
-
-      return join(basePath, path)
+      return resolveRelativePath(documentDefinition(outputName).path)
     },
 
     documentUrl (outputName) {
-      return resolveRelative(originalDocumentUrl(outputName))
+      return resolveRelativeUrl(documentDefinition(outputName).url)
     },
 
     forDocument (outputName) {
@@ -46,22 +63,23 @@ function createConsumer (manifest, options = {}) {
       return createConsumer(manifest, {
         basePath,
         baseUrl: definition.url,
+        outputPath,
       })
     },
 
     imagePath (outputName, sizeKey) {
-      const path = originalImagePath(outputName, sizeKey)
-
-      if (!path) return null
-
-      return join(basePath, path)
+      return resolveRelativePath(imageDefinition(outputName, sizeKey).path)
     },
 
     imageUrl (outputName, sizeKey) {
-      return resolveRelative(originalImageUrl(outputName, sizeKey))
+      return resolveRelativeUrl(imageDefinition(outputName, sizeKey).url)
     },
 
     manifest,
+
+    path (toPath) {
+      return resolveRelativePath(toPath)
+    },
 
     renderTagList (definitions) {
       const rendered = []
@@ -97,47 +115,43 @@ function createConsumer (manifest, options = {}) {
     },
 
     url (toUrl) {
-      return resolveRelative(toUrl)
+      return resolveRelativeUrl(toUrl)
     },
   }
 
   return consumer
 
-  function originalDocumentPath (outputName) {
-    const {path = null} = document[outputName] || {}
-
-    return path
+  function documentDefinition (outputName) {
+    return document[outputName] || {}
   }
 
-  function originalDocumentUrl (outputName) {
-    const {url = null} = document[outputName] || {}
+  function imageDefinition (outputName, sizeKey) {
+    const sizes = image[outputName] || {}
 
-    return url
+    return sizes[sizeKey] || {}
   }
 
-  function originalImagePath (outputName, sizeKey) {
-    const definition = image[outputName] || {}
-    const {path = null} = definition[sizeKey] || {}
+  function resolveAbsolutePath (path) {
+    if (!path) return null
 
-    return path
+    const resolved = outputPath ? resolveUrl(outputPath, path) : path
+
+    return isAbsolutePath(resolved) ? resolved : null
   }
 
-  function originalImageUrl (outputName, sizeKey) {
-    const definition = image[outputName] || {}
-    const {url = null} = definition[sizeKey] || {}
+  function resolveAbsoluteUrl (url) {
+    if (!url) return null
 
-    return url
-  }
-
-  function resolveAbsolute (url) {
     const resolved = appBaseUrl ? resolveUrl(appBaseUrl, url) : url
 
     return isAbsoluteUrl(resolved) ? resolved : null
   }
 
-  function resolveRelative (url) {
-    if (!url) return null
+  function resolveRelativePath (path) {
+    return path ? relativePath(basePath, path) : null
+  }
 
-    return relativeUrl(baseUrl, url)
+  function resolveRelativeUrl (url) {
+    return url ? relativeUrl(baseUrl, url) : null
   }
 }

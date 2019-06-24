@@ -31,5 +31,6 @@ describe('relativePath()', function () {
     expect(relativePath('p/a/t/h', 'p/a/x')).to.equal('../x')
     expect(relativePath('p/a/t/h', '')).to.equal('../../..')
     expect(relativePath('p/a/t/h', 'x')).to.equal('../../../x')
+    expect(relativePath('p/a/t/h', '/x/y')).to.equal('/x/y')
   })
 })
