@@ -16,7 +16,7 @@ describe('relativeUrl()', function () {
     expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/p/a/t/')).to.equal('.')
     expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/p/a/')).to.equal('..')
     expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/p/a/x')).to.equal('../x')
-    expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/')).to.equal('../../../')
+    expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/')).to.equal('../../..')
     expect(relativeUrl('https://iconduit.github.io/p/a/t/h', 'https://iconduit.github.io/x')).to.equal('../../../x')
   })
 
@@ -38,7 +38,7 @@ describe('relativeUrl()', function () {
     expect(relativeUrl('/p/a/t/h', '/p/a/t/')).to.equal('.')
     expect(relativeUrl('/p/a/t/h', '/p/a/')).to.equal('..')
     expect(relativeUrl('/p/a/t/h', '/p/a/x')).to.equal('../x')
-    expect(relativeUrl('/p/a/t/h', '/')).to.equal('../../../')
+    expect(relativeUrl('/p/a/t/h', '/')).to.equal('../../..')
     expect(relativeUrl('/p/a/t/h', '/x')).to.equal('../../../x')
   })
 

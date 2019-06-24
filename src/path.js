@@ -32,11 +32,11 @@ function relativePath (fromPath, toPath) {
   fromPath = normalizePath(fromPath)
 
   const fromDirPath = isDirPath(fromPath) ? fromPath : dirname(fromPath)
-  const relatived = relative(fromDirPath, toPath)
+  const relatived = normalizePath(relative(fromDirPath, toPath))
 
   if (!isDirPath(toPath) || isDirPath(relatived)) return relatived
 
-  return relatived ? `${relatived}/` : '.'
+  return `${relatived}/`
 }
 
 /**
@@ -66,9 +66,13 @@ function resolvePath (basePath, path) {
 
 /**
  * Normalize the supplied path, but use forward slashes regardless of platform.
+ *
+ * Also trims unnecessary trailing slashes for cross-platform consistency.
  */
 function normalizePath (path) {
-  return normalize(path).replace(sep, '/')
+  const normalized = normalize(path).replace(sep, '/')
+
+  return normalized.endsWith('/') && isPathDotTerminated(normalized) ? normalized.slice(0, -1) : normalized
 }
 
 /**
@@ -90,11 +94,24 @@ function normalizePath (path) {
  *   - a/../b
  */
 function isDirPath (path) {
-  if (path === '.' || path.endsWith('/')) return true
+  return path.endsWith('/') || isPathDotTerminated(path)
+}
+
+/**
+ * Determine if a path ends with a .. or . atom.
+ *
+ * Assumes the supplied path is already normalized.
+ */
+function isPathDotTerminated (path) {
+  if (path.endsWith('/')) path = path.slice(0, -1)
+
+  if (path === '..' || path === '.') return true
 
   const lastSlashIndex = path.lastIndexOf('/')
 
-  if (lastSlashIndex < 0) return path === '..'
+  if (lastSlashIndex < 0) return false
 
-  return path.substring(lastSlashIndex + 1) === '..'
+  const lastAtom = path.substring(lastSlashIndex + 1)
+
+  return lastAtom === '..' || lastAtom === '.'
 }
