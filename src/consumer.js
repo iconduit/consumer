@@ -61,7 +61,7 @@ function createConsumer (manifest, options = {}) {
       if (!definition) throw new Error(`Undefined document output ${JSON.stringify(outputName)}`)
 
       return createConsumer(manifest, {
-        basePath,
+        basePath: definition.path,
         baseUrl: definition.url,
         outputPath,
       })
