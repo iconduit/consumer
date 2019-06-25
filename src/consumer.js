@@ -1,4 +1,4 @@
-const {isAbsolutePath, relativePath} = require('./path.js')
+const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
 const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
 const {createTagRenderer} = require('./template.js')
 
@@ -145,7 +145,7 @@ function createConsumer (manifest, options = {}) {
   function resolveAbsolutePath (path) {
     if (!path) return null
 
-    const resolved = outputPath ? resolveUrl(outputPath, path) : path
+    const resolved = outputPath ? resolvePath(outputPath, path) : path
 
     return isAbsolutePath(resolved) ? resolved : null
   }
