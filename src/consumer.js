@@ -1,6 +1,6 @@
 const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
 const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
-const {createTagRenderer} = require('./template.js')
+const {createTagListRenderer} = require('./template.js')
 
 module.exports = {
   createConsumer,
@@ -81,54 +81,12 @@ function createConsumer (manifest, options = {}) {
       return resolveRelativePath(toPath)
     },
 
-    renderTagList (definitions) {
-      const rendered = []
-
-      for (const definition of definitions) {
-        const {documentName, imageName} = definition
-
-        if (imageName) {
-          const sizes = image[imageName]
-
-          for (const sizeKey in sizes) {
-            const current = {
-              name: imageName,
-              output: sizes[sizeKey],
-              size: sizeKey,
-              type: 'image',
-            }
-
-            const renderTag = createTagRenderer({...consumer, current})
-            const html = renderTag(definition)
-
-            if (html) rendered.push(html)
-          }
-        } else if (documentName) {
-          const current = {
-            name: documentName,
-            output: document[documentName],
-            type: 'document',
-          }
-
-          const renderTag = createTagRenderer({...consumer, current})
-          const html = renderTag(definition)
-
-          if (html) rendered.push(html)
-        } else {
-          const renderTag = createTagRenderer({...consumer})
-          const html = renderTag(definition)
-
-          if (html) rendered.push(html)
-        }
-      }
-
-      return rendered
-    },
-
     url (toUrl) {
       return resolveRelativeUrl(toUrl)
     },
   }
+
+  consumer.renderTagList = createTagListRenderer(consumer)
 
   return consumer
 
