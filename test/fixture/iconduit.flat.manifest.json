@@ -1,0 +1,34 @@
+{
+  "output": {
+    "document": {
+      "documentA": {
+        "path": "document-a.html",
+        "type": "text/html",
+        "url": "document-a.html"
+      }
+    },
+    "image": {
+      "imageA": {
+        "sizeA": {
+          "htmlSizes": "1x1",
+          "path": "image-a_size-a.png",
+          "size": {
+            "height": 1,
+            "pixelDensity": 72,
+            "pixelRatio": 2,
+            "width": 1
+          },
+          "type": "image/png",
+          "url": "image-a_size-a.png"
+        }
+      }
+    }
+  },
+  "outputPath": ".",
+  "urls": {
+    "base": "https://iconduit.github.io/",
+    "output": ".",
+    "scope": ".",
+    "start": "."
+  }
+}
