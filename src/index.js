@@ -2,7 +2,7 @@ const transform = require('./transform.js')
 const {createConsumer} = require('./consumer.js')
 const {createTagListRenderer} = require('./template.js')
 const {isAbsolutePath, relativePath, resolvePath, toDirPath} = require('./path.js')
-const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
+const {isAbsoluteUrl, relativeUrl, resolveUrl, toDirUrl} = require('./url.js')
 const {readConsumer} = require('./reader.js')
 
 module.exports = {
@@ -16,5 +16,6 @@ module.exports = {
   resolvePath,
   resolveUrl,
   toDirPath,
+  toDirUrl,
   transform,
 }

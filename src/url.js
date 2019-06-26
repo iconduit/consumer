@@ -1,11 +1,12 @@
 const urlParse = require('url-parse')
 
-const {relativePath, resolvePath} = require('./path.js')
+const {relativePath, resolvePath, toDirPath} = require('./path.js')
 
 module.exports = {
   isAbsoluteUrl,
   relativeUrl,
   resolveUrl,
+  toDirUrl,
 }
 
 /**
@@ -59,6 +60,18 @@ function resolveUrl (baseUrl, url) {
 
   const urlParsed = urlParse(url)
   urlParsed.pathname = resolvePath(baseUrlParsed.pathname, urlParsed.pathname)
+
+  return urlParsed.toString()
+}
+
+/**
+ * Append a trailing slash if the supplied URL is not already a directory URL.
+ */
+function toDirUrl (url) {
+  if (typeof url !== 'string') throw new Error('URL must be a string')
+
+  const urlParsed = urlParse(url)
+  urlParsed.pathname = toDirPath(urlParsed.pathname)
 
   return urlParsed.toString()
 }

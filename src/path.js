@@ -66,6 +66,15 @@ function resolvePath (basePath, path) {
 }
 
 /**
+ * Append a trailing slash if the supplied path is not already a directory path.
+ */
+function toDirPath (path) {
+  if (typeof path !== 'string') throw new Error('Path must be a string')
+
+  return isDirPath(path) ? path : path + '/'
+}
+
+/**
  * Normalize the supplied path, but use forward slashes regardless of platform.
  *
  * Also trims unnecessary trailing slashes for cross-platform consistency.
@@ -74,13 +83,6 @@ function normalizePath (path) {
   const normalized = normalize(path).replace(sep, '/')
 
   return normalized.endsWith('/') && isPathDotTerminated(normalized) ? normalized.slice(0, -1) : normalized
-}
-
-/**
- * Append a trailing slash if the supplied path is not already a directory path.
- */
-function toDirPath (path) {
-  return isDirPath(path) ? path : path + '/'
 }
 
 /**
