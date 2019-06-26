@@ -9,9 +9,9 @@ module.exports = {
 
 function readConsumer (manifestPath) {
   const manifest = readManifest(manifestPath)
-  const basePath = resolve(dirname(manifestPath), manifest.outputPath)
+  const outputPath = resolve(dirname(manifestPath), manifest.outputPath)
 
-  return createConsumer(manifest, {basePath})
+  return createConsumer(manifest, {outputPath})
 }
 
 function readManifest (manifestPath) {
