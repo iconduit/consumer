@@ -4,6 +4,7 @@ module.exports = {
   isAbsolutePath,
   relativePath,
   resolvePath,
+  toDirPath,
 }
 
 /**
@@ -73,6 +74,13 @@ function normalizePath (path) {
   const normalized = normalize(path).replace(sep, '/')
 
   return normalized.endsWith('/') && isPathDotTerminated(normalized) ? normalized.slice(0, -1) : normalized
+}
+
+/**
+ * Append a trailing slash if the supplied path is not already a directory path.
+ */
+function toDirPath (path) {
+  return isDirPath(path) ? path : path + '/'
 }
 
 /**
