@@ -1,4 +1,4 @@
-const {dirname, resolve} = require('path')
+const {dirname, join, normalize, sep} = require('path')
 const {readFileSync} = require('fs')
 
 const {createConsumer} = require('./consumer.js')
@@ -9,7 +9,7 @@ module.exports = {
 
 function readConsumer (manifestPath) {
   const manifest = readManifest(manifestPath)
-  const outputPath = resolve(dirname(manifestPath), manifest.outputPath)
+  const outputPath = normalize(join(dirname(manifestPath), manifest.outputPath) + sep)
 
   return createConsumer(manifest, {outputPath})
 }
