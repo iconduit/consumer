@@ -61,9 +61,10 @@ function createConsumer (manifest, options = {}) {
       if (!definition) throw new Error(`Undefined document output ${JSON.stringify(outputName)}`)
 
       return createConsumer(manifest, {
+        ...options,
+
         basePath: definition.path,
         baseUrl: definition.url,
-        outputPath,
       })
     },
 
@@ -79,6 +80,16 @@ function createConsumer (manifest, options = {}) {
 
     path (toPath) {
       return resolveRelativePath(toPath)
+    },
+
+    transform (...transformations) {
+      return createConsumer(
+        transformations.reduce(
+          (manifest, transformation) => transformation(manifest),
+          manifest
+        ),
+        options
+      )
     },
 
     url (toUrl) {

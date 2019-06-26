@@ -1,3 +1,4 @@
+const transform = require('./transform.js')
 const {createConsumer} = require('./consumer.js')
 const {createTagListRenderer} = require('./template.js')
 const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
@@ -14,4 +15,5 @@ module.exports = {
   relativeUrl,
   resolvePath,
   resolveUrl,
+  transform,
 }
