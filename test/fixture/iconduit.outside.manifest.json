@@ -24,7 +24,7 @@
       }
     }
   },
-  "outputPath": "subdir",
+  "outputPath": "subdir/",
   "urls": {
     "base": "https://iconduit.github.io/",
     "output": ".",
