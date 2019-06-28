@@ -86,9 +86,9 @@ function createConsumer (manifest, options = {}) {
       return createConsumer(
         transformations.reduce(
           (manifest, transformation) => transformation(manifest),
-          manifest
+          manifest,
         ),
-        options
+        options,
       )
     },
 
