@@ -1,6 +1,6 @@
 const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
 const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
-const {createTagListRenderer} = require('./template.js')
+const {createTagListRenderer} = require('./tag.js')
 
 module.exports = {
   createConsumer,
