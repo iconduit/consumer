@@ -1,6 +1,6 @@
 const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
 const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
-const {createTagListRenderer} = require('./tag.js')
+const {createTagDefinitionRenderer, createTagDefinitionResolver} = require('./tag.js')
 
 module.exports = {
   createConsumer,
@@ -97,7 +97,8 @@ function createConsumer (manifest, options = {}) {
     },
   }
 
-  consumer.renderTagList = createTagListRenderer(consumer)
+  consumer.renderTagDefinitions = createTagDefinitionRenderer(consumer)
+  consumer.resolveTagDefinitions = createTagDefinitionResolver(consumer)
 
   return consumer
 

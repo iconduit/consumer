@@ -2,10 +2,20 @@ const htmlTag = require('html-tag')
 const {render} = require('ejs')
 
 module.exports = {
-  createTagListRenderer,
+  createTagDefinitionRenderer,
+  createTagDefinitionResolver,
+  renderTag,
 }
 
-function createTagListRenderer (consumer) {
+function createTagDefinitionRenderer (consumer) {
+  const resolveTagDefinitions = createTagDefinitionResolver(consumer)
+
+  return function renderTagDefinitions (definitions) {
+    return resolveTagDefinitions(definitions).map(renderTag)
+  }
+}
+
+function createTagDefinitionResolver (consumer) {
   const {
     output: {
       document,
@@ -13,8 +23,8 @@ function createTagListRenderer (consumer) {
     },
   } = consumer.manifest
 
-  return function renderTagList (definitions) {
-    const rendered = []
+  return function resolveTagDefinitions (definitions) {
+    const resolved = []
 
     for (const definition of definitions) {
       const {documentName, imageName} = definition
@@ -31,10 +41,10 @@ function createTagListRenderer (consumer) {
             url: consumer.imageUrl.bind(null, imageName, sizeKey),
           }
 
-          const renderTag = createTagRenderer({...consumer, current})
-          const html = renderTag(definition)
+          const resolveTag = createTagResolver({...consumer, current})
+          const tag = resolveTag(definition)
 
-          if (html) rendered.push(html)
+          if (tag) resolved.push(tag)
         }
       } else if (documentName) {
         const current = {
@@ -44,29 +54,35 @@ function createTagListRenderer (consumer) {
           url: consumer.documentUrl.bind(null, documentName),
         }
 
-        const renderTag = createTagRenderer({...consumer, current})
-        const html = renderTag(definition)
+        const resolveTag = createTagResolver({...consumer, current})
+        const tag = resolveTag(definition)
 
-        if (html) rendered.push(html)
+        if (tag) resolved.push(tag)
       } else {
-        const renderTag = createTagRenderer({...consumer})
-        const html = renderTag(definition)
+        const resolveTag = createTagResolver({...consumer})
+        const tag = resolveTag(definition)
 
-        if (html) rendered.push(html)
+        if (tag) resolved.push(tag)
       }
     }
 
-    return rendered
+    return resolved
   }
 }
 
-function createTagRenderer (data) {
+function renderTag (definition) {
+  const {attributes, children, tag} = definition
+
+  return htmlTag(tag, attributes, children.map(renderTag).join(''))
+}
+
+function createTagResolver (data) {
   function renderValue (value) {
     return render(value, data, {escape: identity})
   }
 
-  return function renderTag (definition) {
-    const {attributes, children, predicate, tag} = definition
+  return function resolveTag (definition) {
+    const {attributes, children, isSelfClosing, predicate, tag} = definition
 
     for (const value of predicate) {
       if (!renderValue(value)) return null
@@ -78,10 +94,12 @@ function createTagRenderer (data) {
       renderedAttributes[name] = renderValue(attributes[name])
     }
 
-    const renderedChildren = children.map(renderTag)
-    const innerHtml = renderedChildren.join('')
-
-    return htmlTag(tag, renderedAttributes, innerHtml)
+    return {
+      attributes: renderedAttributes,
+      children: children.map(resolveTag),
+      isSelfClosing,
+      tag,
+    }
   }
 }
 
