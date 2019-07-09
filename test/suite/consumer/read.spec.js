@@ -7,7 +7,7 @@ const fixtureDirPath = resolve(__dirname, '../../fixture')
 
 describe('readConsumer()', function () {
   context('when the manifest is located directly in the output directory', function () {
-    const fixturePath = join(fixtureDirPath, 'iconduit.flat.manifest.json')
+    const fixturePath = join(fixtureDirPath, 'flat.iconduitmanifest')
 
     beforeEach(function () {
       this.consumer = readConsumer(fixturePath)
@@ -47,7 +47,7 @@ describe('readConsumer()', function () {
   })
 
   context('when the manifest is located in a sub-directory of the output directory', function () {
-    const fixturePath = join(fixtureDirPath, 'subdir/iconduit.subdir.manifest.json')
+    const fixturePath = join(fixtureDirPath, 'subdir/subdir.iconduitmanifest')
 
     beforeEach(function () {
       this.consumer = readConsumer(fixturePath)
@@ -87,7 +87,7 @@ describe('readConsumer()', function () {
   })
 
   context('when the manifest is located ouside the output directory', function () {
-    const fixturePath = join(fixtureDirPath, 'iconduit.outside.manifest.json')
+    const fixturePath = join(fixtureDirPath, 'outside.iconduitmanifest')
 
     beforeEach(function () {
       this.consumer = readConsumer(fixturePath)
