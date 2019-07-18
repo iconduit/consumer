@@ -1,4 +1,4 @@
-const htmlTag = require('html-tag')
+const escapeHtml = require('escape-html')
 const {render} = require('ejs')
 
 module.exports = {
@@ -71,9 +71,76 @@ function createTagDefinitionResolver (consumer) {
 }
 
 function renderTag (definition) {
-  const {attributes, children, tag} = definition
+  const result = [definition]
+  const toRender = [result]
 
-  return htmlTag(tag, attributes, children.map(renderTag).join(''))
+  for (let i = 0; i < toRender.length; ++i) {
+    const list = toRender[i]
+
+    for (let j = 0; j < list.length; ++j) {
+      const entry = list[j]
+
+      if (!entry || typeof entry !== 'object') continue
+
+      const {
+        attributes = {},
+        children = [],
+        isSelfClosing = false,
+        tag,
+      } = list[j]
+
+      if (!tag) throw new Error('Missing tag name')
+      if (isSelfClosing && children.length > 0) throw new Error('Self-closing tags cannot have children')
+
+      const copy = {
+        attributes,
+        children: children.slice(),
+        isSelfClosing,
+        tag,
+      }
+
+      list[j] = copy
+      if (children.length > 0) toRender.push(copy.children)
+    }
+  }
+
+  for (let i = toRender.length - 1; i >= 0; --i) {
+    const list = toRender[i]
+
+    for (let j = 0; j < list.length; ++j) {
+      const entry = list[j]
+      const type = typeof entry
+
+      if (!entry && type !== 'number') {
+        list[j] = ''
+
+        continue
+      }
+
+      if (type !== 'object') continue
+
+      const {attributes, children, isSelfClosing, tag} = entry
+
+      let renderedAttributes = ''
+
+      for (const name in attributes) {
+        const value = attributes[name]
+
+        if (value === true) {
+          renderedAttributes += ` ${name}`
+        } else if (value || typeof value === 'number') {
+          renderedAttributes += ` ${name}="${escapeHtml(value)}"`
+        }
+      }
+
+      const openingTag = `<${tag}${renderedAttributes}>`
+      const closingTag = isSelfClosing ? '' : `</${tag}>`
+
+      list[j] = openingTag + children.join('') + closingTag
+    }
+  }
+
+  return result[0]
 }
 
 function createTagResolver (data) {

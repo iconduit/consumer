@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "ejs": "^2.6.1",
-    "html-tag": "^2.0.0",
+    "escape-html": "^1.0.3",
     "url-parse": "^1.4.7"
   },
   "devDependencies": {
