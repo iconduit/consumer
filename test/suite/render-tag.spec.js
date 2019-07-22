@@ -183,6 +183,43 @@ describe('renderTag()', function () {
     expect(renderTag(data)).to.equal('<tag-a><tag-b><tag-c></tag-c></tag-b></tag-a>')
   })
 
+  it('should support reused sub-definitions', function () {
+    const children = [
+      {
+        tag: 'tag-c',
+        children: [],
+      },
+    ]
+    const child = {
+      tag: 'tag-b',
+      children,
+    }
+    const data = {
+      tag: 'tag-a',
+      children: [
+        child,
+        child,
+      ],
+    }
+
+    expect(renderTag(data)).to.equal('<tag-a><tag-b><tag-c></tag-c></tag-b><tag-b><tag-c></tag-c></tag-b></tag-a>')
+  })
+
+  it('should not modify the definition supplied to it', function () {
+    const data = {
+      tag: 'tag-a',
+      children: [
+        {
+          tag: 'tag-b',
+        },
+      ],
+    }
+    const copy = JSON.parse(JSON.stringify(data))
+    renderTag(data)
+
+    expect(data).to.deep.equal(copy)
+  })
+
   it('should support child HTML strings', function () {
     const data = {
       tag: 'tag-a',
