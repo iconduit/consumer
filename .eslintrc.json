@@ -1,10 +1,14 @@
 {
-  "extends": "standard",
+  "extends": [
+    "standard",
+    "plugin:jest/recommended",
+    "plugin:jest/style"
+  ],
   "plugins": [
-    "mocha"
+    "jest"
   ],
   "env": {
-    "mocha": true,
+    "jest": true,
     "node": true
   },
   "rules": {
@@ -40,14 +44,6 @@
     "node/process-exit-as-throw": "error",
     "node/shebang": "error",
 
-    "mocha/handle-done-callback": "error",
-    "mocha/no-exclusive-tests": "error",
-    "mocha/no-global-tests": "error",
-    "mocha/no-identical-title": "error",
-    "mocha/no-mocha-arrows": "error",
-    "mocha/no-nested-tests": "error",
-    "mocha/no-return-and-callback": "error",
-    "mocha/no-sibling-hooks": "error",
-    "mocha/no-top-level-hooks": "error"
+    "jest/no-focused-tests": "warn"
   }
 }
