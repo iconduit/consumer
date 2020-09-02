@@ -1,11 +1,11 @@
-const {expect} = require('chai')
-
 const {createConsumer} = require('../../../src/consumer.js')
 const {replaceBaseUrl} = require('../../../src/transform.js')
 
-describe('consumer.transform()', function () {
-  beforeEach(function () {
-    this.manifest = {
+describe('consumer.transform()', () => {
+  let baseConsumer
+
+  beforeEach(() => {
+    const manifest = {
       output: {
         document: {
           documentA: {
@@ -20,12 +20,12 @@ describe('consumer.transform()', function () {
       },
     }
 
-    this.consumer = createConsumer(this.manifest)
+    baseConsumer = createConsumer(manifest)
   })
 
-  it('should allow replacement of the base URL', function () {
-    const consumer = this.consumer.transform(replaceBaseUrl('https://iconduit.github.io/'))
+  it('should allow replacement of the base URL', () => {
+    const consumer = baseConsumer.transform(replaceBaseUrl('https://iconduit.github.io/'))
 
-    expect(consumer.absoluteDocumentUrl('documentA')).to.equal('https://iconduit.github.io/document-a.html')
+    expect(consumer.absoluteDocumentUrl('documentA')).toBe('https://iconduit.github.io/document-a.html')
   })
 })
