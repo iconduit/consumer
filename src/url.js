@@ -1,18 +1,11 @@
-const urlParse = require('url-parse')
+import urlParse from 'url-parse'
 
-const {relativePath, resolvePath, toDirPath} = require('./path.js')
-
-module.exports = {
-  isAbsoluteUrl,
-  relativeUrl,
-  resolveUrl,
-  toDirUrl,
-}
+import {relativePath, resolvePath, toDirPath} from './path.js'
 
 /**
  * Determine whether the supplied URL is absolute.
  */
-function isAbsoluteUrl (url) {
+export function isAbsoluteUrl (url) {
   if (typeof url !== 'string') throw new Error('URL must be a string')
 
   const parsed = urlParse(url)
@@ -25,7 +18,7 @@ function isAbsoluteUrl (url) {
  *
  * Supports relative URLs.
  */
-function relativeUrl (fromUrl, toUrl) {
+export function relativeUrl (fromUrl, toUrl) {
   if (typeof fromUrl !== 'string') throw new Error('From URL must be a string')
   if (typeof toUrl !== 'string') throw new Error('To URL must be a string')
 
@@ -50,7 +43,7 @@ function relativeUrl (fromUrl, toUrl) {
  *
  * Supports relative URLs.
  */
-function resolveUrl (baseUrl, url) {
+export function resolveUrl (baseUrl, url) {
   if (typeof baseUrl !== 'string') throw new Error('Base URL must be a string')
   if (typeof url !== 'string') throw new Error('URL must be a string')
 
@@ -67,7 +60,7 @@ function resolveUrl (baseUrl, url) {
 /**
  * Append a trailing slash if the supplied URL is not already a directory URL.
  */
-function toDirUrl (url) {
+export function toDirUrl (url) {
   if (typeof url !== 'string') throw new Error('URL must be a string')
 
   const urlParsed = urlParse(url)

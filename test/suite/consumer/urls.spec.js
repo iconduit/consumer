@@ -1,4 +1,4 @@
-const {createConsumer} = require('../../../src/consumer.js')
+import {createConsumer} from '../../../src/consumer.js'
 
 describe('Consumer URL methods', () => {
   let manifest

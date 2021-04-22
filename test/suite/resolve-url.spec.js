@@ -1,4 +1,4 @@
-const {resolveUrl} = require('../../src/url.js')
+import {resolveUrl} from '../../src/url.js'
 
 describe('resolveUrl()', () => {
   it('should support resolving against absolute URLs', () => {

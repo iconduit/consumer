@@ -1,13 +1,7 @@
-const escapeHtml = require('escape-html')
-const {render} = require('ejs')
+import escapeHtml from 'escape-html'
+import {render} from 'ejs'
 
-module.exports = {
-  createTagDefinitionRenderer,
-  createTagDefinitionResolver,
-  renderTag,
-}
-
-function createTagDefinitionRenderer (consumer) {
+export function createTagDefinitionRenderer (consumer) {
   const resolveTagDefinitions = createTagDefinitionResolver(consumer)
 
   return function renderTagDefinitions (definitions) {
@@ -15,7 +9,7 @@ function createTagDefinitionRenderer (consumer) {
   }
 }
 
-function createTagDefinitionResolver (consumer) {
+export function createTagDefinitionResolver (consumer) {
   const {
     output: {
       document,
@@ -70,7 +64,7 @@ function createTagDefinitionResolver (consumer) {
   }
 }
 
-function renderTag (definition) {
+export function renderTag (definition) {
   const result = [definition]
   const toRender = [result]
 

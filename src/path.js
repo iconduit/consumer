@@ -1,16 +1,9 @@
-const {dirname, isAbsolute, normalize, relative, sep} = require('path')
-
-module.exports = {
-  isAbsolutePath,
-  relativePath,
-  resolvePath,
-  toDirPath,
-}
+import {dirname, isAbsolute, normalize, relative, sep} from 'path'
 
 /**
  * Determine whether the supplied path is absolute.
  */
-function isAbsolutePath (path) {
+export function isAbsolutePath (path) {
   if (typeof path !== 'string') throw new Error('Path must be a string')
 
   return isAbsolute(path)
@@ -22,7 +15,7 @@ function isAbsolutePath (path) {
  *
  * Trailing slashes are significant.
  */
-function relativePath (fromPath, toPath) {
+export function relativePath (fromPath, toPath) {
   if (typeof fromPath !== 'string') throw new Error('From path must be a string')
   if (typeof toPath !== 'string') throw new Error('To path must be a string')
 
@@ -45,7 +38,7 @@ function relativePath (fromPath, toPath) {
  *
  * Trailing slashes are significant.
  */
-function resolvePath (basePath, path) {
+export function resolvePath (basePath, path) {
   if (typeof basePath !== 'string') throw new Error('Base path must be a string')
   if (typeof path !== 'string') throw new Error('Path must be a string')
 
@@ -68,7 +61,7 @@ function resolvePath (basePath, path) {
 /**
  * Append a trailing slash if the supplied path is not already a directory path.
  */
-function toDirPath (path) {
+export function toDirPath (path) {
   if (typeof path !== 'string') throw new Error('Path must be a string')
 
   return isDirPath(path) ? path : path + '/'

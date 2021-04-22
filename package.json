@@ -8,6 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "main": "src/index.js",
   "files": [
     "/src/"
@@ -27,6 +28,7 @@
     "eslint-plugin-jest": "^24.3.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "jest-esm-transformer": "^1.0.0"
   }
 }

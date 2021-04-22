@@ -1,4 +1,4 @@
-const {renderTag} = require('../../src/tag.js')
+import {renderTag} from '../../src/tag.js'
 
 describe('renderTag()', () => {
   it('should require a tag name', () => {

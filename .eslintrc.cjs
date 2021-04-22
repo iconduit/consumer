@@ -30,20 +30,6 @@ module.exports = {
     'prefer-const': 'error',
     'quote-props': ['error', 'as-needed'],
 
-    'node/file-extension-in-import': ['error', 'always'],
-    'node/no-deprecated-api': 'error',
-    'node/no-extraneous-import': 'error',
-    'node/no-extraneous-require': 'error',
-    'node/no-missing-import': 'error',
-    'node/no-unpublished-bin': 'error',
-    'node/no-unpublished-import': 'error',
-    'node/no-unpublished-require': 'error',
-    'node/no-unsupported-features/es-builtins': 'error',
-    'node/no-unsupported-features/es-syntax': 'error',
-    'node/no-unsupported-features/node-builtins': 'error',
-    'node/process-exit-as-throw': 'error',
-    'node/shebang': 'error',
-
     'jest/no-focused-tests': 'warn',
   },
 }

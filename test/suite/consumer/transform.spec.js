@@ -1,5 +1,5 @@
-const {createConsumer} = require('../../../src/consumer.js')
-const {replaceBaseUrl} = require('../../../src/transform.js')
+import {createConsumer} from '../../../src/consumer.js'
+import {replaceBaseUrl} from '../../../src/transform.js'
 
 describe('consumer.transform()', () => {
   let baseConsumer

@@ -1,13 +1,9 @@
-const {readFileSync} = require('fs')
+import {readFileSync} from 'fs'
 
-const {createConsumer} = require('./consumer.js')
-const {resolvePath} = require('./path.js')
+import {createConsumer} from './consumer.js'
+import {resolvePath} from './path.js'
 
-module.exports = {
-  readConsumer,
-}
-
-function readConsumer (manifestPath) {
+export function readConsumer (manifestPath) {
   const manifest = readManifest(manifestPath)
   const outputPath = resolvePath(manifestPath, manifest.outputPath)
 
