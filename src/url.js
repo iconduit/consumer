@@ -47,11 +47,13 @@ export function resolveUrl (baseUrl, url) {
   if (typeof baseUrl !== 'string') throw new Error('Base URL must be a string')
   if (typeof url !== 'string') throw new Error('URL must be a string')
 
+  const urlParsed = urlParse(url)
+  if (urlParsed.host) return url
+
   const baseUrlParsed = urlParse(baseUrl)
 
   if (baseUrlParsed.host) return urlParse(url, baseUrl).toString()
 
-  const urlParsed = urlParse(url)
   urlParsed.pathname = resolvePath(baseUrlParsed.pathname, urlParsed.pathname)
 
   return urlParsed.toString()

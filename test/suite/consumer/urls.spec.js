@@ -30,6 +30,7 @@ describe('Consumer URL methods', () => {
       expect(consumer.absoluteUrl('x/y')).toBe('https://iconduit.github.io/p/a/t/x/y')
       expect(consumer.absoluteUrl('x/y/')).toBe('https://iconduit.github.io/p/a/t/x/y/')
       expect(consumer.absoluteUrl('https://example.org/x/y')).toBe('https://example.org/x/y')
+      expect(consumer.absoluteUrl('iconduit://dashboard')).toBe('iconduit://dashboard')
     })
 
     it('should be able to resolve relative URLs', () => {
