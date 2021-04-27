@@ -1,4 +1,4 @@
-import {toDirUrl} from '../../src/url.js'
+const {toDirUrl} = require('../../src/url.js')
 
 describe('toDirUrl()', () => {
   it('should append a trailing slash to non-directory URLs', () => {

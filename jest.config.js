@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   collectCoverageFrom: [
     'src/**/*.js',
   ],
@@ -7,7 +7,4 @@ export default {
   testMatch: [
     '**/test/suite/**/*.spec.js',
   ],
-  transform: {
-    '.js': 'jest-esm-transformer',
-  },
 }

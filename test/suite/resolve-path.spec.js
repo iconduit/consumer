@@ -1,4 +1,4 @@
-import {resolvePath} from '../../src/path.js'
+const {resolvePath} = require('../../src/path.js')
 
 describe('resolvePath()', () => {
   it('should support resolving against absolute paths', () => {

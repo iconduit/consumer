@@ -1,4 +1,4 @@
-import {relativePath} from '../../src/path.js'
+const {relativePath} = require('../../src/path.js')
 
 describe('relativePath()', () => {
   it('should support resolving from absolute paths', () => {

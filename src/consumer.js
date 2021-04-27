@@ -1,8 +1,12 @@
-import {isAbsolutePath, relativePath, resolvePath} from './path.js'
-import {isAbsoluteUrl, relativeUrl, resolveUrl} from './url.js'
-import {createTagDefinitionRenderer, createTagDefinitionResolver} from './tag.js'
+const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
+const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
+const {createTagDefinitionRenderer, createTagDefinitionResolver} = require('./tag.js')
 
-export function createConsumer (manifest, options = {}) {
+module.exports = {
+  createConsumer,
+}
+
+function createConsumer (manifest, options = {}) {
   const {
     output: {document, image},
     outputPath: manifestOutputPath,

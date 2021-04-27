@@ -1,6 +1,6 @@
-import {join, resolve} from 'path'
+const {join, resolve} = require('path')
 
-import {readConsumer} from '../../../src/reader.js'
+const {readConsumer} = require('../../../src/reader.js')
 
 const fixtureDirPath = resolve(__dirname, '../../fixture')
 

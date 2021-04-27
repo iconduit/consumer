@@ -1,4 +1,4 @@
-import {relativeUrl} from '../../src/url.js'
+const {relativeUrl} = require('../../src/url.js')
 
 describe('relativeUrl()', () => {
   it('should support resolving from absolute URLs with the same origin', () => {
