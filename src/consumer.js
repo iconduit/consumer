@@ -31,7 +31,7 @@ function createConsumer (manifest, options = {}) {
       return resolveAbsoluteUrl(url)
     },
 
-    absoluteDocumentPath (outputName, sizeKey) {
+    absoluteDocumentPath (outputName) {
       return resolveAbsolutePath(documentDefinition(outputName).path)
     },
 
