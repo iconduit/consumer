@@ -1,4 +1,6 @@
 const {readFileSync} = require('fs')
+const {resolve} = require('path')
+const {cwd} = require('process')
 
 const {createConsumer} = require('./consumer.js')
 const {resolvePath} = require('./path.js')
@@ -8,8 +10,9 @@ module.exports = {
 }
 
 function readConsumer (manifestPath) {
-  const manifest = readManifest(manifestPath)
-  const outputPath = resolvePath(manifestPath, manifest.outputPath)
+  const absoluteManifestPath = resolve(cwd(), manifestPath)
+  const manifest = readManifest(absoluteManifestPath)
+  const outputPath = resolvePath(absoluteManifestPath, manifest.outputPath)
 
   return createConsumer(manifest, {outputPath})
 }

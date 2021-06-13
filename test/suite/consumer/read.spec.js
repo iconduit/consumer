@@ -1,4 +1,5 @@
-const {join, resolve} = require('path')
+const {join, relative, resolve} = require('path')
+const {cwd} = require('process')
 
 const {readConsumer} = require('../../../src/reader.js')
 
@@ -6,7 +7,7 @@ const fixtureDirPath = resolve(__dirname, '../../fixture')
 
 describe('readConsumer()', () => {
   describe('when the manifest is located directly in the output directory', () => {
-    const fixturePath = join(fixtureDirPath, 'flat.iconduitmanifest')
+    const fixturePath = relative(cwd(), join(fixtureDirPath, 'flat.iconduitmanifest'))
     let consumer
 
     beforeEach(() => {
@@ -47,7 +48,7 @@ describe('readConsumer()', () => {
   })
 
   describe('when the manifest is located in a sub-directory of the output directory', () => {
-    const fixturePath = join(fixtureDirPath, 'subdir/subdir.iconduitmanifest')
+    const fixturePath = relative(cwd(), join(fixtureDirPath, 'subdir/subdir.iconduitmanifest'))
     let consumer
 
     beforeEach(() => {
@@ -88,7 +89,7 @@ describe('readConsumer()', () => {
   })
 
   describe('when the manifest is located ouside the output directory', () => {
-    const fixturePath = join(fixtureDirPath, 'outside.iconduitmanifest')
+    const fixturePath = relative(cwd(), join(fixtureDirPath, 'outside.iconduitmanifest'))
     let consumer
 
     beforeEach(() => {
