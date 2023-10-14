@@ -1,9 +1,23 @@
-const transform = require('./transform.js')
-const {createConsumer} = require('./consumer.js')
-const {createTagDefinitionRenderer, createTagDefinitionResolver, renderTag} = require('./tag.js')
-const {isAbsolutePath, relativePath, resolvePath, toDirPath} = require('./path.js')
-const {isAbsoluteUrl, relativeUrl, resolveUrl, toDirUrl} = require('./url.js')
-const {readConsumer} = require('./reader.js')
+const transform = require("./transform.js");
+const { createConsumer } = require("./consumer.js");
+const {
+  createTagDefinitionRenderer,
+  createTagDefinitionResolver,
+  renderTag,
+} = require("./tag.js");
+const {
+  isAbsolutePath,
+  relativePath,
+  resolvePath,
+  toDirPath,
+} = require("./path.js");
+const {
+  isAbsoluteUrl,
+  relativeUrl,
+  resolveUrl,
+  toDirUrl,
+} = require("./url.js");
+const { readConsumer } = require("./reader.js");
 
 module.exports = {
   createConsumer,
@@ -20,4 +34,4 @@ module.exports = {
   toDirPath,
   toDirUrl,
   transform,
-}
+};

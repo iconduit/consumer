@@ -1,23 +1,23 @@
-const urlParse = require('url-parse')
+const urlParse = require("url-parse");
 
-const {relativePath, resolvePath, toDirPath} = require('./path.js')
+const { relativePath, resolvePath, toDirPath } = require("./path.js");
 
 module.exports = {
   isAbsoluteUrl,
   relativeUrl,
   resolveUrl,
   toDirUrl,
-}
+};
 
 /**
  * Determine whether the supplied URL is absolute.
  */
-function isAbsoluteUrl (url) {
-  if (typeof url !== 'string') throw new Error('URL must be a string')
+function isAbsoluteUrl(url) {
+  if (typeof url !== "string") throw new Error("URL must be a string");
 
-  const parsed = urlParse(url)
+  const parsed = urlParse(url);
 
-  return !!parsed.host
+  return !!parsed.host;
 }
 
 /**
@@ -25,24 +25,27 @@ function isAbsoluteUrl (url) {
  *
  * Supports relative URLs.
  */
-function relativeUrl (fromUrl, toUrl) {
-  if (typeof fromUrl !== 'string') throw new Error('From URL must be a string')
-  if (typeof toUrl !== 'string') throw new Error('To URL must be a string')
+function relativeUrl(fromUrl, toUrl) {
+  if (typeof fromUrl !== "string") throw new Error("From URL must be a string");
+  if (typeof toUrl !== "string") throw new Error("To URL must be a string");
 
-  const fromUrlParsed = urlParse(fromUrl)
-  const toUrlParsed = urlParse(toUrl)
+  const fromUrlParsed = urlParse(fromUrl);
+  const toUrlParsed = urlParse(toUrl);
 
-  if (fromUrlParsed.origin !== toUrlParsed.origin) return toUrl
+  if (fromUrlParsed.origin !== toUrlParsed.origin) return toUrl;
 
-  toUrlParsed.protocol = ''
-  toUrlParsed.slashes = false
-  toUrlParsed.auth = ''
-  toUrlParsed.host = ''
-  toUrlParsed.port = ''
+  toUrlParsed.protocol = "";
+  toUrlParsed.slashes = false;
+  toUrlParsed.auth = "";
+  toUrlParsed.host = "";
+  toUrlParsed.port = "";
 
-  toUrlParsed.pathname = relativePath(urlPathname(fromUrlParsed), urlPathname(toUrlParsed))
+  toUrlParsed.pathname = relativePath(
+    urlPathname(fromUrlParsed),
+    urlPathname(toUrlParsed),
+  );
 
-  return toUrlParsed.toString()
+  return toUrlParsed.toString();
 }
 
 /**
@@ -50,38 +53,38 @@ function relativeUrl (fromUrl, toUrl) {
  *
  * Supports relative URLs.
  */
-function resolveUrl (baseUrl, url) {
-  if (typeof baseUrl !== 'string') throw new Error('Base URL must be a string')
-  if (typeof url !== 'string') throw new Error('URL must be a string')
+function resolveUrl(baseUrl, url) {
+  if (typeof baseUrl !== "string") throw new Error("Base URL must be a string");
+  if (typeof url !== "string") throw new Error("URL must be a string");
 
-  const urlParsed = urlParse(url)
-  if (urlParsed.host) return url
+  const urlParsed = urlParse(url);
+  if (urlParsed.host) return url;
 
-  const baseUrlParsed = urlParse(baseUrl)
+  const baseUrlParsed = urlParse(baseUrl);
 
-  if (baseUrlParsed.host) return urlParse(url, baseUrl).toString()
+  if (baseUrlParsed.host) return urlParse(url, baseUrl).toString();
 
-  urlParsed.pathname = resolvePath(baseUrlParsed.pathname, urlParsed.pathname)
+  urlParsed.pathname = resolvePath(baseUrlParsed.pathname, urlParsed.pathname);
 
-  return urlParsed.toString()
+  return urlParsed.toString();
 }
 
 /**
  * Append a trailing slash if the supplied URL is not already a directory URL.
  */
-function toDirUrl (url) {
-  if (typeof url !== 'string') throw new Error('URL must be a string')
+function toDirUrl(url) {
+  if (typeof url !== "string") throw new Error("URL must be a string");
 
-  const urlParsed = urlParse(url)
-  urlParsed.pathname = toDirPath(urlParsed.pathname)
+  const urlParsed = urlParse(url);
+  urlParsed.pathname = toDirPath(urlParsed.pathname);
 
-  return urlParsed.toString()
+  return urlParsed.toString();
 }
 
-function urlPathname (parsed) {
-  const {host, pathname} = parsed
+function urlPathname(parsed) {
+  const { host, pathname } = parsed;
 
-  if (!host) return pathname
+  if (!host) return pathname;
 
-  return pathname || '/'
+  return pathname || "/";
 }

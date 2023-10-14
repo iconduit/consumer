@@ -1,138 +1,144 @@
-const {isAbsolutePath, relativePath, resolvePath} = require('./path.js')
-const {isAbsoluteUrl, relativeUrl, resolveUrl} = require('./url.js')
-const {createTagDefinitionRenderer, createTagDefinitionResolver} = require('./tag.js')
+const { isAbsolutePath, relativePath, resolvePath } = require("./path.js");
+const { isAbsoluteUrl, relativeUrl, resolveUrl } = require("./url.js");
+const {
+  createTagDefinitionRenderer,
+  createTagDefinitionResolver,
+} = require("./tag.js");
 
 module.exports = {
   createConsumer,
-}
+};
 
-function createConsumer (manifest, options = {}) {
+function createConsumer(manifest, options = {}) {
   const {
-    output: {document, image},
+    output: { document, image },
     outputPath: manifestOutputPath,
-    urls: {base: appBaseUrl, output: outputBaseUrl},
-  } = manifest
+    urls: { base: appBaseUrl, output: outputBaseUrl },
+  } = manifest;
 
   const {
-    basePath = '.',
+    basePath = ".",
     baseUrl: optionsBaseUrl,
     outputPath: optionsOutputPath,
-  } = options
+  } = options;
 
-  const baseUrl = optionsBaseUrl || outputBaseUrl
-  const outputPath = optionsOutputPath || manifestOutputPath
+  const baseUrl = optionsBaseUrl || outputBaseUrl;
+  const outputPath = optionsOutputPath || manifestOutputPath;
 
   const consumer = {
-    absolutePath (path) {
-      return resolveAbsolutePath(path)
+    absolutePath(path) {
+      return resolveAbsolutePath(path);
     },
 
-    absoluteUrl (url) {
-      return resolveAbsoluteUrl(url)
+    absoluteUrl(url) {
+      return resolveAbsoluteUrl(url);
     },
 
-    absoluteDocumentPath (outputName) {
-      return resolveAbsolutePath(documentDefinition(outputName).path)
+    absoluteDocumentPath(outputName) {
+      return resolveAbsolutePath(documentDefinition(outputName).path);
     },
 
-    absoluteDocumentUrl (outputName) {
-      return resolveAbsoluteUrl(documentDefinition(outputName).url)
+    absoluteDocumentUrl(outputName) {
+      return resolveAbsoluteUrl(documentDefinition(outputName).url);
     },
 
-    absoluteImagePath (outputName, sizeKey) {
-      return resolveAbsolutePath(imageDefinition(outputName, sizeKey).path)
+    absoluteImagePath(outputName, sizeKey) {
+      return resolveAbsolutePath(imageDefinition(outputName, sizeKey).path);
     },
 
-    absoluteImageUrl (outputName, sizeKey) {
-      return resolveAbsoluteUrl(imageDefinition(outputName, sizeKey).url)
+    absoluteImageUrl(outputName, sizeKey) {
+      return resolveAbsoluteUrl(imageDefinition(outputName, sizeKey).url);
     },
 
-    documentPath (outputName) {
-      return resolveRelativePath(documentDefinition(outputName).path)
+    documentPath(outputName) {
+      return resolveRelativePath(documentDefinition(outputName).path);
     },
 
-    documentUrl (outputName) {
-      return resolveRelativeUrl(documentDefinition(outputName).url)
+    documentUrl(outputName) {
+      return resolveRelativeUrl(documentDefinition(outputName).url);
     },
 
-    forDocument (outputName) {
-      const definition = document[outputName]
+    forDocument(outputName) {
+      const definition = document[outputName];
 
-      if (!definition) throw new Error(`Undefined document output ${JSON.stringify(outputName)}`)
+      if (!definition)
+        throw new Error(
+          `Undefined document output ${JSON.stringify(outputName)}`,
+        );
 
       return createConsumer(manifest, {
         ...options,
 
         basePath: definition.path,
         baseUrl: definition.url,
-      })
+      });
     },
 
-    imagePath (outputName, sizeKey) {
-      return resolveRelativePath(imageDefinition(outputName, sizeKey).path)
+    imagePath(outputName, sizeKey) {
+      return resolveRelativePath(imageDefinition(outputName, sizeKey).path);
     },
 
-    imageUrl (outputName, sizeKey) {
-      return resolveRelativeUrl(imageDefinition(outputName, sizeKey).url)
+    imageUrl(outputName, sizeKey) {
+      return resolveRelativeUrl(imageDefinition(outputName, sizeKey).url);
     },
 
     manifest,
 
-    path (toPath) {
-      return resolveRelativePath(toPath)
+    path(toPath) {
+      return resolveRelativePath(toPath);
     },
 
-    transform (...transformations) {
+    transform(...transformations) {
       return createConsumer(
         transformations.reduce(
           (manifest, transformation) => transformation(manifest),
           manifest,
         ),
         options,
-      )
+      );
     },
 
-    url (toUrl) {
-      return resolveRelativeUrl(toUrl)
+    url(toUrl) {
+      return resolveRelativeUrl(toUrl);
     },
+  };
+
+  consumer.renderTagDefinitions = createTagDefinitionRenderer(consumer);
+  consumer.resolveTagDefinitions = createTagDefinitionResolver(consumer);
+
+  return consumer;
+
+  function documentDefinition(outputName) {
+    return document[outputName] || {};
   }
 
-  consumer.renderTagDefinitions = createTagDefinitionRenderer(consumer)
-  consumer.resolveTagDefinitions = createTagDefinitionResolver(consumer)
+  function imageDefinition(outputName, sizeKey) {
+    const sizes = image[outputName] || {};
 
-  return consumer
-
-  function documentDefinition (outputName) {
-    return document[outputName] || {}
+    return sizes[sizeKey] || {};
   }
 
-  function imageDefinition (outputName, sizeKey) {
-    const sizes = image[outputName] || {}
+  function resolveAbsolutePath(path) {
+    if (!path) return null;
 
-    return sizes[sizeKey] || {}
+    const resolved = outputPath ? resolvePath(outputPath, path) : path;
+
+    return isAbsolutePath(resolved) ? resolved : null;
   }
 
-  function resolveAbsolutePath (path) {
-    if (!path) return null
+  function resolveAbsoluteUrl(url) {
+    if (!url) return null;
 
-    const resolved = outputPath ? resolvePath(outputPath, path) : path
+    const resolved = appBaseUrl ? resolveUrl(appBaseUrl, url) : url;
 
-    return isAbsolutePath(resolved) ? resolved : null
+    return isAbsoluteUrl(resolved) ? resolved : null;
   }
 
-  function resolveAbsoluteUrl (url) {
-    if (!url) return null
-
-    const resolved = appBaseUrl ? resolveUrl(appBaseUrl, url) : url
-
-    return isAbsoluteUrl(resolved) ? resolved : null
+  function resolveRelativePath(path) {
+    return path ? relativePath(basePath, path) : null;
   }
 
-  function resolveRelativePath (path) {
-    return path ? relativePath(basePath, path) : null
-  }
-
-  function resolveRelativeUrl (url) {
-    return url ? relativeUrl(baseUrl, url) : null
+  function resolveRelativeUrl(url) {
+    return url ? relativeUrl(baseUrl, url) : null;
   }
 }
