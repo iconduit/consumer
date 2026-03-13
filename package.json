@@ -16,7 +16,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "ejs": "^4.0.0",
+    "ejs": "^5.0.0",
     "escape-html": "^1.0.3",
     "url-parse": "^1.5.1"
   },
